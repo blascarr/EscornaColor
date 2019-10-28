@@ -7,7 +7,7 @@ Para usar el sensor de color, es necesario sustituir la pieza del alojamiento pa
 
 ![EscornaSide](src/TCS3200_Side.png) 
 
-![EscornaColor](src/TCS3200_Bottom.png = 250x250 )
+![EscornaColor](src/TCS3200_Bottom.png | width=100)
 
 ![EscornaBottomSide](src/TCS3200_BottomSide.png) 
 
