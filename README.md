@@ -7,10 +7,11 @@ Para usar el sensor de color, es necesario sustituir la pieza del alojamiento pa
 
 ![EscornaSide](src/TCS3200_Side.png) 
 
-![EscornaColor](src/TCS3200_Bottom.png | width=100)
-
-![EscornaBottomSide](src/TCS3200_BottomSide.png) 
-
+<p align="center">
+  <img  src="src/TCS3200_Side.png" height="250"/>
+  <img  src="src/TCS3200_Bottom.png" height="250"/>
+  <img  src="src/TCS3200_BottomSide.png" height="250"/>
+</p>
 
 El sensor tiene distintos pines, de los cuales los más importantes son el pin S2, S3 y OUT. El pin de LED nos servirá solamente para encender y apagar el módulo.
 - S2 --> D11
