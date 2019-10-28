@@ -5,12 +5,10 @@ El **sensor de color TCS3200** añade formatos de juego interesantes al famoso m
 
 Para usar el sensor de color, es necesario sustituir la pieza del alojamiento para la canica con el siguiente [modelo STL](https://www.thingiverse.com/thing:3934783) publicado en [Thingiverse](https://www.thingiverse.com/thing:3934783).
 
-![EscornaSide](src/TCS3200_Side.png) 
-
 <p align="center">
-  <img  src="src/TCS3200_Side.png" height="250"/>
-  <img  src="src/TCS3200_Bottom.png" height="250"/>
-  <img  src="src/TCS3200_BottomSide.png" height="250"/>
+	<img  src="src/TCS3200_BottomSide.png" height="250"/>
+	<img  src="src/TCS3200_Bottom.png" height="250"/>
+	<img  src="src/TCS3200_Side.png" height="250"/>
 </p>
 
 El sensor tiene distintos pines, de los cuales los más importantes son el pin S2, S3 y OUT. El pin de LED nos servirá solamente para encender y apagar el módulo.
