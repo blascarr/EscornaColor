@@ -25,7 +25,7 @@ Este sensor de color viene preparado para reconocer **8 colores** por defecto qu
 - NEGRO
 - ROJO
 - VERDE
-- AZUl
+- AZUL
 - AMARILLO
 - NARANJA
 - MARRON
@@ -40,18 +40,18 @@ El sensor de color requiere de una **calibración inicial** para poder clasifica
 Primero hay que calibrar las lecturas con respecto al color blanco y el color negro que establecen los límites de lectura.
 
 ### Calibración de la tabla de colores
-Acto seguido se requiere de una calibración de una tabla de 8 colores que se almacenan en la memoria EEPROM.
+Acto seguido se requiere de una calibración de una tabla de **8 colores** que se almacenan en la **memoria EEPROM**.
 
-Esta calibración se puede realizar a través del monitor serie o por Bluetooth a través de una aplicación.
+Esta calibración se puede realizar a través del **monitor serie** o por **Bluetooth** a través de una aplicación.
 
 # Formatos de juego a desarrollar.
 
 - Cuando se alcanza un color, se ejecutan las acciones de movimiento hasta llegar al objetivo. Juego de la hormiga. [Hormiga de Langton Simplificado](https://es.wikipedia.org/wiki/Hormiga_de_Langton)
-- El **EscornaColor** tiene un número de vidas limitado. Los colores pueden quitar vidas. El objetivo es llegar al objetivo vivo.
-- A través de una aplicación se pueden ver los colores y movimientos del Escornabot. Sin ver el tablero ni al EscornaColor hay que dibujar el tablero original.
+- El **EscornaColor** tiene un número de vidas limitado. Los colores pueden quitar vidas. El objetivo es llegar vivo al objetivo.
+- A través de una aplicación se pueden ver los colores y movimientos del Escornabot. Sin mirar el tablero ni al EscornaColor hay que dibujar el tablero original.
 
 - Programación libre de escornabot con distintas dinámicas en base a las lecturas del sensor de color.
 
-Esta extensión se basa en el desarrollo de una librería para módulos TCS3200 accesible en el siguiente enlace.
+Esta extensión se basa en el desarrollo de una librería para módulos TCS3200 accesible en el siguiente [enlace](https://github.com/blascarr/TCS3200-ColorSensor).
 
 - [Introducción al color en robótica](http://blascarr.com/lessons/introduccion-al-color/)
