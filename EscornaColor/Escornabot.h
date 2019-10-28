@@ -142,6 +142,7 @@ See LICENSE.txt for details
         pin_OUT: TCS_OUT,
         nSamples: TCS_SAMPLES,
         refreshTime: TCS_REFRESH,
+        EEPROM_DIR: TCS_EEPROM,
     };
 
     ColorSensor TCS = ColorSensor(&COLOR_SENSOR_CONFIG);

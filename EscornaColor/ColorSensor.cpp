@@ -90,6 +90,7 @@ void ColorSensor::init()
 	ColorSensor::nSamples( _config->nSamples  );
 	ColorSensor::setRefreshTime( _config->refreshTime );
 	ColorSensor::setFrequency( TCS3200_FREQ_HI );
+	ColorSensor::loadCal( _config->EEPROM_DIR );
 	ColorSensor::LEDON( true );
 }
 

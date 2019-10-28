@@ -190,7 +190,8 @@ See LICENSE.txt for details
 #define TCS_LED  A6
 
 #define TCS_SAMPLES  40
-#define TCS_REFRESH  2000
+#define TCS_REFRESH  200
+#define TCS_EEPROM 0
 
 #endif // USE_COLORSENSOR
 

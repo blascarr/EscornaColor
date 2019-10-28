@@ -67,6 +67,7 @@ ZGZMakerSpace - Blascarr Contribution
 				uint8_t pin_OUT;
 				uint8_t nSamples;
 				uint8_t refreshTime;
+				uint8_t EEPROM_DIR;
 			} Config;
 			
 			colorTable _ct[SIZECOLORS]={
