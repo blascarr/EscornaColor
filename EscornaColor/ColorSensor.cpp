@@ -27,7 +27,7 @@ ZGZMakerSpace - Blascarr Contribution
 #include "EventManager.h"
 #include "ColorSensor.h"
 
-
+#define SERIAL_DEBUG
 #define SERIALDEBUG Serial
 
 //Pattern for DEBUG detection
@@ -80,8 +80,7 @@ extern EventManager* EVENTS;
 ColorSensor::ColorSensor(const Config* config)
 {
     this->_config = config;
-
-    _isPause = false;
+    _isON = true;
 }
 
 void ColorSensor::init()
@@ -94,15 +93,33 @@ void ColorSensor::init()
 	ColorSensor::LEDON( true );
 }
 
-//////////////////////////////////////////////////////////////////////
+//////////////////////////// Event Habdling //////////////////////////////////////////
 
 void ColorSensor::tick(uint32_t micros)
 {
     _current_millis = micros / 1000;
 
-	if (onChangeColor()){
+	//if ( onChangeColor() ){
+		//Serial.print( ColorSensor::readColor() );
+	//};
+}
+
+void  ColorSensor::moveExecuted ( MOVE move ){
+	if ( onChangeColor() ){
 		Serial.print( ColorSensor::readColor() );
 	};
+}
+
+void  ColorSensor::buttonPressed(BUTTON button){
+	
+	Serial.print( ColorSensor::readColor() );
+	
+}
+
+void  ColorSensor::buttonLongReleased(BUTTON button){
+	if ( button == BUTTON_DOWN){
+		ColorSensor::calibration(0);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -125,7 +142,7 @@ void  ColorSensor::setEEPROMaddress( uint8_t nEEPROM ){
 
 void  ColorSensor::LEDON(bool ledON){
 	digitalWrite(_LED, (ledON) ? HIGH : LOW );
-	ColorSensor::_isPause = !ledON;
+	ColorSensor::_isON = ledON;
 }
 
 void  ColorSensor::setID(String ID){
@@ -170,7 +187,7 @@ void ColorSensor::setFilter(uint8_t f){
 }
 
 
-void ColorSensor::read(bool RGB) {
+void ColorSensor::read() {
 	ColorSensor::currentMillis = millis();
 	if(ColorSensor::currentMillis-ColorSensor::oldMillis >= ColorSensor::refreshTime){
 		
@@ -186,8 +203,7 @@ void ColorSensor::read(bool RGB) {
 	-------------------------------------------------------
 */
 bool ColorSensor::onChangeColor(){
-	//if ( !_isPause  ){
-		//ColorSensor::readRGB();
+	if ( ColorSensor::_isON  ){
 		ColorSensor::read();
 		int cli= ColorSensor::checkColor( &_rgb );
 
@@ -202,9 +218,9 @@ bool ColorSensor::onChangeColor(){
 		}else{
 			return false;
 		}
-	//}else{
-	//	return false;
-	//}
+	}else{
+		return false;
+	}
 
 }
 
@@ -360,7 +376,7 @@ uint8_t ColorSensor::checkColor(colorData *rgb){
 
 	for (uint8_t i=0; i< SIZECOLORS; i++){
 		v = 0;
-		for (uint8_t j=0; j<RGB_SIZE; j++){
+		for (uint8_t j=0; j< RGB_SIZE; j++){
 			d = _ct[i].rgb.value[j] - rgb->value[j];
 			v += (d * d);
 		}

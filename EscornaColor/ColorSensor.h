@@ -112,7 +112,7 @@ ZGZMakerSpace - Blascarr Contribution
 			void  setFrequency(uint8_t f);// set frequency prescaler - default 100%	
 			void  setRGBMode(bool _RGBMode);// set RGB Mode (true) or RAW Mode (false) in readings	
 
-			void read(bool RGB = true);      // synchronously non-blocking reading value
+			void read();      // synchronously non-blocking reading value
 			bool onChangeColor();
 			sensorData  color();	//Single Reading
 			sensorData  relativeColor(bool RGB = true);
@@ -142,6 +142,10 @@ ZGZMakerSpace - Blascarr Contribution
 			void  saveCT(uint8_t nEEPROM = 0);
 			void  loadCT(uint8_t nEEPROM = 0);
 			void  readCT();
+		protected:
+			void moveExecuted ( MOVE move );
+			void buttonPressed(BUTTON button);
+			void buttonLongReleased(BUTTON button);
 
 		private:
 			const Config* _config;
@@ -156,7 +160,7 @@ ZGZMakerSpace - Blascarr Contribution
 			int	      _nSamples = 40;
 			char	  _ID[TCS_SIZENAME];
 
-			bool _isPause = false;
+			bool _isON = true;
 
 			unsigned long currentMillis,oldMillis, _current_millis;
 			unsigned long refreshTime= 200; 
