@@ -79,7 +79,8 @@ enum
 {
     GAME_MODE_GRID_90 = 0, // squared grid (classical mode)
     GAME_MODE_GRID_60 = 1, // triangled grid
-    GAME_MODE_COLOR = 2, // triangled grid
+    GAME_MODE_COLOR = 2, // Read Color grid
+    COLOR_CALIBRATION_MODE = 3, // Calibration Color
 };
 typedef uint8_t GAME_MODE;
 

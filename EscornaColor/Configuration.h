@@ -167,7 +167,7 @@ See LICENSE.txt for details
 #ifdef USE_BLUETOOTH
 
 // Arduino serial port (default is Serial, use Serial1 with Arduino Micro)
-//#define BLUETOOTH_SERIAL    Serial
+#define BLUETOOTH_SERIAL    Serial
 //#define BLUETOOTH_SERIAL    Serial1
 //#define BLUETOOTH_SERIAL    Serial2
 //#define BLUETOOTH_SERIAL    Serial3

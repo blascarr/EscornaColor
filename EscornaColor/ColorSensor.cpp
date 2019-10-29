@@ -41,6 +41,28 @@ ZGZMakerSpace - Blascarr Contribution
 	#define  DEBUG_SEPCMD ","
 #endif
 
+//Pattern for CALIBRATION detection
+#ifndef CAL_STARTCMD 
+	#define  CAL_STARTCMD "<"
+#endif
+#ifndef CAL_ENDCMD
+	#define  CAL_ENDCMD ">"
+#endif
+#ifndef CAL_SEPCMD
+	#define  CAL_SEPCMD "|"
+#endif
+
+//Pattern for COLOR detection
+#ifndef COLOR_STARTCMD 
+	#define  COLOR_STARTCMD "#"
+#endif
+#ifndef COLOR_ENDCMD 
+	#define  COLOR_ENDCMD "*"
+#endif
+#ifndef COLOR_SEPCMD
+	#define  COLOR_SEPCMD "|"
+#endif
+
 #if defined(SERIAL_DEBUG)
 	#define  DUMP(s, v)  { SERIALDEBUG.print(F(s)); SERIALDEBUG.print(v); }
 	#define  DUMP_CMD(s, v)  { SERIALDEBUG.print(DEBUG_STARTCMD); SERIALDEBUG.print(F(s)); SERIALDEBUG.print(v); SERIALDEBUG.print(DEBUG_ENDCMD); }
@@ -48,8 +70,8 @@ ZGZMakerSpace - Blascarr Contribution
 	#define  DUMPS_CMD(s)    { SERIALDEBUG.print(DEBUG_STARTCMD); SERIALDEBUG.print(F(s)); SERIALDEBUG.print(DEBUG_ENDCMD);}
 	#define  DUMPPRINTLN() { SERIALDEBUG.println();}
 
-	#define  DUMPCAL(s, v)  { DUMP(s, v); }
-	#define  DUMPSCAL(s)    { DUMPS(s); }
+	#define  DUMPCAL(s, v)  { SERIALDEBUG.print(CAL_STARTCMD); SERIALDEBUG.print(F(s)); SERIALDEBUG.print(v);SERIALDEBUG.print(CAL_ENDCMD); }
+	#define  DUMPSCAL(s)    { SERIALDEBUG.print(CAL_STARTCMD); SERIALDEBUG.print(F(s)); SERIALDEBUG.print(CAL_ENDCMD); }
 	#define  DUMPDEBUGCAL(s, v)  { DUMPCAL(s, v); }
 	#define  DUMPSDEBUGCAL(s)    { DUMPSCAL(s); }
 	#define  DUMPSAVAILABLE()    SERIALDEBUG.available()
@@ -112,7 +134,9 @@ void  ColorSensor::moveExecuted ( MOVE move ){
 }
 
 void  ColorSensor::buttonPressed(BUTTON button){
-	
+	if ( onChangeColor() ){
+		Serial.print("NEW COLOR - ");
+	};
 	Serial.print( ColorSensor::readColor() );
 	
 }
@@ -120,6 +144,10 @@ void  ColorSensor::buttonPressed(BUTTON button){
 void  ColorSensor::buttonLongReleased(BUTTON button){
 	if ( button == BUTTON_DOWN){
 		ColorSensor::calibration(0);
+	}
+
+	if ( button == BUTTON_UP){
+		ColorSensor::loadCal(0);
 	}
 }
 
@@ -188,6 +216,12 @@ void ColorSensor::setFilter(uint8_t f){
 }
 
 
+/*
+	-------------------------------------------------------
+	------------Non - Blocking Functions-------------------
+	-------------------------------------------------------
+*/
+
 void ColorSensor::read() {
 	ColorSensor::currentMillis = millis();
 	if(ColorSensor::currentMillis-ColorSensor::oldMillis >= ColorSensor::refreshTime){
@@ -198,11 +232,6 @@ void ColorSensor::read() {
 	}
 }
 
-/*
-	-------------------------------------------------------
-	------------Non - Blocking Functions-------------------
-	-------------------------------------------------------
-*/
 bool ColorSensor::onChangeColor(){
 	if ( ColorSensor::_isON  ){
 		ColorSensor::read();
@@ -398,56 +427,57 @@ uint8_t ColorSensor::checkColor(colorData *rgb){
 	-------------------------------------------------------
 */
 
-
 void ColorSensor::calibration(uint8_t nEEPROM){
 	ColorSensor::setDarkCal();
 	ColorSensor::setWhiteCal();
 	DUMPREADSTRING();
 
-	DUMPSDEBUGCAL("\nDo you want to save Calibration in EEPROM?");
+	DUMPS_CMD("Do you want to save Calibration in EEPROM?");
 	while(!DUMPSAVAILABLE()){
 	}
 
 	char readY;
 	DUMPREAD(readY);
-	DUMPDEBUGCAL("Char Read : ",readY);
+	DUMP_CMD("Char Read : ",readY);
 	if (readY == 'Y'){
-		DUMPDEBUGCAL("\nBlack and White Calibration saved in EEPROM Address:  ",ColorSensor::_nEEPROM);
+		DUMP_CMD("Black and White Calibration saved in EEPROM Address:  ",ColorSensor::_nEEPROM);
 		DUMPPRINTLN();
 		ColorSensor::saveCal(nEEPROM);
 	}
 
-	DUMPREADSTRING();DUMPSDEBUGCAL("\nDo you want to set Color values (Y) or Load EEPROM Values (N)?");
+	DUMPREADSTRING();DUMPS_CMD("Do you want to set Color values (Y) or Load EEPROM Values (N)?");
 	while(!DUMPSAVAILABLE()){
 	}
 
 	DUMPREAD(readY);
-	DUMPDEBUGCAL("Char Read : ",readY);
+	DUMP_CMD("Char Read : ",readY);
+	DUMPPRINTLN();
 	if (readY == 'Y'){
-		DUMPSDEBUGCAL("\nSetting RGB Values");
+		DUMPS("Setting RGB Values");
 		ColorSensor::setColorCal();
-		DUMPREADSTRING();DUMPSDEBUGCAL("\nDo you want to save Calibration Colors in EEPROM?\n");
+		DUMPREADSTRING();DUMPS_CMD(" Do you want to save Calibration Colors in EEPROM? ");
 		while(!DUMPSAVAILABLE()){
 		}
 
 		DUMPREAD(readY);
-		DUMPDEBUGCAL("Char Read : ",readY);
+		DUMP_CMD("Char Read : ",readY);DUMPPRINTLN();
 		if (readY == 'Y'){
-	  		DUMPDEBUGCAL("\nColour table saved in EEPROM in EEPROM Address:  ", ColorSensor::_nEEPROM);
+	  		DUMP_CMD("Colour table saved in EEPROM in EEPROM Address:  ", ColorSensor::_nEEPROM);
 	  		ColorSensor::saveCT(ColorSensor::_nEEPROM);
 		}else{
-	  		DUMPSDEBUGCAL("\nNot saved in EEPROM");
+	  		DUMPS_CMD("Not saved in EEPROM");
 		}
+		DUMPPRINTLN();
 	}else if (readY == 'N'){
-		DUMPSDEBUGCAL("\nEEPROM RGB Values");
+		DUMPS_CMD("EEPROM RGB Values");
 		ColorSensor::loadCT( nEEPROM );
 	}
-
+	DUMPPRINTLN();
 }
 
 void ColorSensor::setDarkCal(){
 	sensorData darkcl;
-	DUMPSDEBUGCAL(" BLACK Calibration ");
+	DUMPS(" BLACK Calibration ");
 	DUMPPRINTLN();
 	ColorSensor::voidRAW(&darkcl);
 	bool sure= false;
@@ -459,7 +489,7 @@ void ColorSensor::setDarkCal(){
 		DUMPREADSTRING();
 
 		darkcl = ColorSensor::readRAW();
-		DUMPSDEBUGCAL("RGB BLACK Values"); 
+		DUMPS ("RGB BLACK Values "); 
 
 		String dataRGB = "";
 		for (int i = 0; i < RGB_SIZE; ++i){
@@ -469,30 +499,30 @@ void ColorSensor::setDarkCal(){
 		DUMPCAL("",dataRGB ); 
 		DUMPPRINTLN();
 
-		DUMPDEBUGCAL("",dataRGB);
-		DUMPPRINTLN();
-		DUMPSDEBUGCAL(" Are you sure this values are correct for BLACK Calibration? (Y/N)");
+		DUMPS_CMD(" Are you sure this values are correct for BLACK Calibration? (Y/N)");
 		while(!DUMPSAVAILABLE()){
 
 		}
 		DUMPPRINTLN();
 		char chr;
 		DUMPREAD(chr);
-		DUMPDEBUGCAL("Char Read : ",chr);
+		DUMP_CMD("Char Read : ",chr);DUMPPRINTLN();
 		if (chr == 'Y'){
 			_darkraw = darkcl;
 			sure = true;
 		}
 	}
+	
+	DUMPS_CMD(" End BLACK Calibration");
 	DUMPPRINTLN();
-	DUMPSDEBUGCAL(" End BLACK Calibration");
 }
 
 
 void ColorSensor::setWhiteCal(){
 	sensorData whitecl;
 	DUMPPRINTLN();
-	DUMPSDEBUGCAL(" WHITE Calibration ");
+	DUMPS("WHITE Calibration ");
+	DUMPPRINTLN();
 	ColorSensor::voidRAW(&whitecl);
 	bool sure= false;
 	while (sure == false){
@@ -503,7 +533,7 @@ void ColorSensor::setWhiteCal(){
 		DUMPREADSTRING();
 
 		whitecl = ColorSensor::readRAW();
-		DUMPSDEBUGCAL("RGB WHITE Values"); 
+		DUMPS("RGB WHITE Values "); 
 
 		String dataRGB = "";
 		for (int i = 0; i < RGB_SIZE; ++i){
@@ -511,28 +541,29 @@ void ColorSensor::setWhiteCal(){
 			dataRGB += DEBUG_SEPCMD;
 		}
 		DUMPCAL("",dataRGB ); 
-		DUMPDEBUGCAL("",dataRGB);
+		
 		DUMPPRINTLN();
-		DUMPSDEBUGCAL(" Are you sure this values are correct for WHITE Calibration? (Y/N)");
+		DUMPS_CMD(" Are you sure this values are correct for WHITE Calibration? (Y/N)");
 		while(!DUMPSAVAILABLE()){
 
 		}
 		DUMPPRINTLN();
 		char chr;
 		DUMPREAD(chr);
-		DUMPDEBUGCAL("Char Read : ",chr);
+		DUMP_CMD("Char Read : ",chr);DUMPPRINTLN();
 		if (chr == 'Y'){
 			_whiteraw = whitecl;
 			sure = true;
 		}
 	}
-
-	DUMPSDEBUGCAL(" End WHITE Calibration");
+	
+	DUMPS_CMD(" End WHITE Calibration");
+	DUMPPRINTLN();
 }
 
 void ColorSensor::setColorCal(){
 
-	DUMPSDEBUGCAL(" Color Calibration ");
+	DUMPS_CMD(" Color Calibration ");
 
 	while(!DUMPSAVAILABLE()){ }
 
@@ -541,7 +572,7 @@ void ColorSensor::setColorCal(){
 		bool sure= false;
 		while (sure == false){
 			DUMPPRINTLN();
-			DUMPDEBUGCAL("Calibration for color - ", _ct[i].name);
+			DUMP_CMD("Calibration for color - ", _ct[i].name);
 			DUMPPRINTLN();
 			colorData colorcl = ColorSensor::readRGB();
 
@@ -552,13 +583,13 @@ void ColorSensor::setColorCal(){
 			}
 			DUMPCAL("",dataRGB );
 			DUMPPRINTLN();
-			DUMPSDEBUGCAL("Is Correct? ");
+			DUMPS_CMD("Is Correct? ");
 			while(!DUMPSAVAILABLE()){
 			}
 
 			char readY;
 			DUMPREAD(readY);
-			DUMPDEBUGCAL("Char Read : ",readY);
+			DUMP_CMD("Char Read : ",readY);
 			DUMPPRINTLN();
 
 			if (readY == 'Y'){
@@ -592,7 +623,7 @@ void  ColorSensor::saveCal(uint8_t nEEPROM){
 		DUMPS("\t");
 	}
 
-	DUMPS("\nSaved Calibration");
+	DUMPS_CMD("Calibration Saved");DUMPPRINTLN();
 }
 
 void  ColorSensor::loadCal(uint8_t nEEPROM){
@@ -646,6 +677,7 @@ void  ColorSensor::loadCT(uint8_t nEEPROM ){
 	ColorSensor::readCT();
 
 	DUMPS("\n Color Table Calibration Loaded ");
+	DUMPPRINTLN();
 }
 
 void  ColorSensor::readCT(){

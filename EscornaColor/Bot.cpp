@@ -247,8 +247,8 @@ void Bot::_storeMove(MOVE move)
 
 void Bot::_next_game_mode()
 {
-    // select the next game mode (2 modes currently available)
-    ++_game_mode %= 2;
+    // select the next game mode (3 modes currently available)
+    ++_game_mode %= 3;
 
     switch (_game_mode)
     {
@@ -264,9 +264,12 @@ void Bot::_next_game_mode()
             ENGINE->setSquareDiagonals(false);
             break;
         case GAME_MODE_COLOR:
-            //PROGRAM->setTurnDegrees(90);
-            //PROGRAM->setAltTurnDegrees(45);
-            //ENGINE->setSquareDiagonals(true);
+            
+            
+            break;
+        case COLOR_CALIBRATION_MODE:
+            
+
             break;
     }
 
