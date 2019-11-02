@@ -96,6 +96,11 @@ extern EventManager* EVENTS;
 
 //////////////////////////////////////////////////////////////////////
 
+/**
+ * \Color Sensor TCS3200 for color detection.
+ * \author @blascarr
+ */
+
 ColorSensor::ColorSensor(const Config* config)
 {
     this->_config = config;
@@ -116,11 +121,18 @@ void ColorSensor::init()
 
 void  ColorSensor::moveExecuted ( MOVE move ){
 	
-	if (COLORACTION [ getColorID() ].onChange){
+	ColorSensor::read();
+	int cli= ColorSensor::checkColor( &_rgb );
+
+	if ( COLORACTION [ cli ].onChange ){
 		//Accion cuando encuentra nuevo color 
-		if ( onChangeColor() ){
+		if(cli != ColorSensor::_lastColor){
+			ColorSensor::_lastColor = cli;
 			COLORACTION [ getColorID() ].action();
 		};
+		//if ( onChangeColor() ){
+			
+		//};
 	}else{	
 		//Accion ejecutada siempre que finaliza un movimiento
 		ColorSensor::readColor();

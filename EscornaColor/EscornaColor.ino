@@ -25,10 +25,10 @@ See LICENSE.txt for details
 #include "Bot.h"
 
 //////////////////////////////////////////////////////////////////////
-
 // instance
+
 Bot ESCORNABOT;
-int lives = 5;
+int lives = 2;
 
 void white(){
   ESCORNABOT.move( MOVE_BACKWARD );
@@ -45,48 +45,52 @@ void red(){
 }
 
 void blue(){
-  lives = lives -1;
-  Serial.print("Lives: ");Serial.println(lives);
-  if (lives <= 0 ){
-    ESCORNABOT.game_over();
-  }
+    ESCORNABOT.move( random( 8 ) );
 }
 
 void green(){
-
-  ESCORNABOT.move( random( 8 ) );
-
+  lives -= 1;
+  Serial.print("Lives: ");Serial.println(lives);
+  if (lives <= 0 ){
+    ESCORNABOT.game_over();
+    Serial.println("GAME OVER");
+  }
 }
-/*
+
 void yellow(){
-  ESCORNABOT.move( MOVE_RIGHT );
-  ESCORNABOT.move( MOVE_FORWARD );
-  Serial.println("COLOR YELLOW");
+  lives -= 1;
+  Serial.print("Lives: ");Serial.println(lives);
+  if (lives <= 0 ){
+    ESCORNABOT.game_over();
+    Serial.println("GAME OVER");
+  }
 }
-*/
 
-//////////////////////////////////////////////////////////////////////
-void vfn(){
+void aux_void(){
   
 }
+//////////////////////////////////////////////////////////////////////
+
 void setup()
 {
     ESCORNABOT.init();
     ESCORNABOT.load_colortable();
 
+    //Hay que editar las acciones de color en orden
     ESCORNABOT.color_action( WHITE , white );
     ESCORNABOT.color_action( BLACK , black );
     ESCORNABOT.color_action( RED , red );
-    ESCORNABOT.color_action( GREEN , green );
-    ESCORNABOT.color_action( BLUE , blue );
+    
+    //YELLOW need to change from consecutive yellow colors
+    ESCORNABOT.color_action( GREEN , green,true );
+    ESCORNABOT.color_action( YELLOW , yellow );
+    
     //random movements for Green color
     randomSeed(analogRead(5));
-    
-    /*ESCORNABOT.color_action( YELLOW , vfn );
-    
-    
-    ESCORNABOT.color_action( BROWN , vfn );
-    ESCORNABOT.color_action( ORANGE , vfn );*/
+    ESCORNABOT.color_action( BLUE , blue );
+
+    ESCORNABOT.color_action( BROWN , aux_void );
+    ESCORNABOT.color_action( ORANGE , aux_void );
 }
 
 //////////////////////////////////////////////////////////////////////

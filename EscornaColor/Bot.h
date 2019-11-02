@@ -35,7 +35,7 @@ See LICENSE.txt for details
 class Bot : public EventListener
 {
 public:
-
+    uint8_t lives = 2;
     void init();
 
     void loop();
@@ -74,6 +74,9 @@ public:
     void game_over(){ endGame( false ); };
     
     
+    void set_win_tone( char win_tone );
+    void set_over_tone( char over_tone );
+    
 private:
     void _go();
 
@@ -84,6 +87,8 @@ private:
     GAME_MODE _game_mode = GAME_MODE_GRID_90;
 
     void _next_game_mode();
+    char *_win_tone;
+    char *_over_tone;
 
 };
 

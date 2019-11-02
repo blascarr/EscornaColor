@@ -40,6 +40,7 @@ void Bot::init()
     // early console
     Serial.begin(9600);
     Serial.println(FIRMWARE_VERSION);
+    Serial.setTimeout(300);
     delay(100);
 
     // init bluetooth
@@ -253,9 +254,9 @@ void Bot::move(MOVE move)
 void Bot::endGame( bool success ){
     if( success ){
         KEYPAD_LEDS.setAllLed( true );
-        BUZZER.playRttl(":d=8,o=6,b=400:c,e,g,e,c,g,e,g,c,g,c,e,c,g,e,g,e,c,");
+        BUZZER.playRttl( ":d=8,o=6,b=400:c,e,g,e,c,g,e,g,c,g,c,e,c,g,e,g,e,c," );
     }else{
-        BUZZER.playRttl(":d=16,o=6,b=800:f,4p,f,4p,f,4p,f,4p,c,4p,c,4p,c,4p,c,");
+        BUZZER.playRttl( ":d=4,o=7,b=125:e,d#,e,d#,e,b#,d,c,8a," );
     }
     _game_mode = GAME_OVER;
 }
@@ -300,6 +301,14 @@ void Bot::load_colortable ( uint16_t nEEPROM  ){
 
 void Bot::color_calibration( uint16_t nEEPROM  ){
     TCS.calibration( nEEPROM );
+}
+
+void Bot::set_win_tone( char win_tone ){
+    _win_tone = &win_tone;
+}
+
+void Bot::set_over_tone( char over_tone ){
+    _over_tone = &over_tone;
 }
 
 //////////////////////////////////////////////////////////////////////

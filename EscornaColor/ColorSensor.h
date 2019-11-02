@@ -57,14 +57,18 @@ ZGZMakerSpace - Blascarr Contribution
 		char    name[TCS_SIZENAME];  // color name 
 		colorData rgb;    // RGB value
 	} colorTable;
-
-	typedef void ( *_f_COLOR )( );
 	
+	typedef void ( *_f_COLOR )( );
+
 	typedef struct{
-		_f_COLOR action;
+		_f_COLOR action = NULL ;
 		bool onChange = false;
 	} colorAction;
 
+	/**
+	* \Color Sensor TCS3200 for color detection.
+	* \author @blascarr
+	*/
 	class ColorSensor : public EventListener {
 		public:
 			typedef struct {
@@ -88,7 +92,7 @@ ZGZMakerSpace - Blascarr Contribution
 				colorTable {"BROWN", {190, 170, 150} }
 			};
 
-			colorAction COLORACTION [RGB_SIZE];
+			colorAction COLORACTION [SIZECOLORS];
 			
 			ColorSensor(const Config* config);
 
@@ -119,7 +123,7 @@ ZGZMakerSpace - Blascarr Contribution
 			void readColor();
 			bool onChangeColor();
 			sensorData  color();	//Single Reading
-			
+
 			sensorData readRAW();      // Read RAW Values
 			colorData readRGB();      // Read RGB Values
 			
