@@ -80,9 +80,26 @@ enum
     GAME_MODE_GRID_90 = 0, // squared grid (classical mode)
     GAME_MODE_GRID_60 = 1, // triangled grid
     GAME_MODE_COLOR = 2, // Read Color grid
-    COLOR_CALIBRATION_MODE = 3, // Calibration Color
+    GAME_OVER = 3, // GAME OVER
 };
 typedef uint8_t GAME_MODE;
+
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+
+// Color List
+enum
+{
+    WHITE = 0,
+    BLACK = 1,
+    RED = 2,
+    GREEN = 3,
+    BLUE = 4,
+    YELLOW = 5,
+    ORANGE = 6,
+    BROWN = 7,
+};
+typedef uint8_t COLORS;
 
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////

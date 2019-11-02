@@ -65,7 +65,7 @@ See LICENSE.txt for details
 #define POV_INITIAL    POV_ESCORNABOT
 
 // bluetooth serial
-#define USE_BLUETOOTH true
+#define USE_BLUETOOTH false
 #define BLUETOOTH_BAUDS 9600
 
 // buzzer

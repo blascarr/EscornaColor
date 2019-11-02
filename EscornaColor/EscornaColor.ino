@@ -28,12 +28,65 @@ See LICENSE.txt for details
 
 // instance
 Bot ESCORNABOT;
+int lives = 5;
+
+void white(){
+  ESCORNABOT.move( MOVE_BACKWARD );
+  Serial.println("COLOR White");
+}
+
+void black(){
+  ESCORNABOT.move( MOVE_FORWARD );
+  Serial.println("COLOR Black");
+}
+
+void red(){
+  ESCORNABOT.win();
+}
+
+void blue(){
+  lives = lives -1;
+  Serial.print("Lives: ");Serial.println(lives);
+  if (lives <= 0 ){
+    ESCORNABOT.game_over();
+  }
+}
+
+void green(){
+
+  ESCORNABOT.move( random( 8 ) );
+
+}
+/*
+void yellow(){
+  ESCORNABOT.move( MOVE_RIGHT );
+  ESCORNABOT.move( MOVE_FORWARD );
+  Serial.println("COLOR YELLOW");
+}
+*/
 
 //////////////////////////////////////////////////////////////////////
-
+void vfn(){
+  
+}
 void setup()
 {
     ESCORNABOT.init();
+    ESCORNABOT.load_colortable();
+
+    ESCORNABOT.color_action( WHITE , white );
+    ESCORNABOT.color_action( BLACK , black );
+    ESCORNABOT.color_action( RED , red );
+    ESCORNABOT.color_action( GREEN , green );
+    ESCORNABOT.color_action( BLUE , blue );
+    //random movements for Green color
+    randomSeed(analogRead(5));
+    
+    /*ESCORNABOT.color_action( YELLOW , vfn );
+    
+    
+    ESCORNABOT.color_action( BROWN , vfn );
+    ESCORNABOT.color_action( ORANGE , vfn );*/
 }
 
 //////////////////////////////////////////////////////////////////////

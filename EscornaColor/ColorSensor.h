@@ -58,6 +58,13 @@ ZGZMakerSpace - Blascarr Contribution
 		colorData rgb;    // RGB value
 	} colorTable;
 
+	typedef void ( *_f_COLOR )( );
+	
+	typedef struct{
+		_f_COLOR action;
+		bool onChange = false;
+	} colorAction;
+
 	class ColorSensor : public EventListener {
 		public:
 			typedef struct {
@@ -67,34 +74,29 @@ ZGZMakerSpace - Blascarr Contribution
 				uint8_t pin_OUT;
 				uint8_t nSamples;
 				uint8_t refreshTime;
-				uint8_t EEPROM_DIR;
+				uint16_t EEPROM_DIR;
 			} Config;
 			
 			colorTable _ct[SIZECOLORS]={
 				colorTable {"WHITE", {255, 255, 255} },
 				colorTable {"BLACK", {0, 0, 0} },
-				colorTable {"YELLOW", {250, 250, 225} },
-				colorTable {"ORANGE", {240, 200, 180} },
 				colorTable {"RED", {250, 175, 190} },
 				colorTable {"GREEN", {180, 220, 195} },
 				colorTable {"BLUE", {150, 190, 220} },
+				colorTable {"YELLOW", {250, 250, 225} },
+				colorTable {"ORANGE", {240, 200, 180} },
 				colorTable {"BROWN", {190, 170, 150} }
 			};
 
+			colorAction COLORACTION [RGB_SIZE];
+			
 			ColorSensor(const Config* config);
 
 			virtual void init();
+			
 			/**
-			* Scans the color below.
-			* @return The color .
+			* Sensor Color Constructor
 			*/
-			//virtual void scanColor() = 0;
-
-			/**
-			* Runs the execution thread.
-			*/
-			virtual void tick(uint32_t micros);
-
 	    	//ColorSensor();
 	    	ColorSensor(uint8_t S2, uint8_t S3, uint8_t OUT, uint8_t LED );
 	    	void  setPins(uint8_t S2, uint8_t S3, uint8_t OUT, uint8_t LED );
@@ -102,7 +104,7 @@ ZGZMakerSpace - Blascarr Contribution
 			
 			void  LEDON(bool ledON);
 			void  nSamples(int nSamples){ _nSamples = nSamples;}
-			void  setEEPROMaddress( uint8_t nEEPROM );
+			void  setEEPROMaddress( uint16_t nEEPROM );
 			
 			void  voidRAW(sensorData *d);
 
@@ -114,20 +116,22 @@ ZGZMakerSpace - Blascarr Contribution
 			void  setRGBMode(bool _RGBMode);// set RGB Mode (true) or RAW Mode (false) in readings	
 
 			void read();      // synchronously non-blocking reading value
+			void readColor();
 			bool onChangeColor();
 			sensorData  color();	//Single Reading
-			sensorData  relativeColor(bool RGB = true);
+			//sensorData  relativeColor(bool RGB = true);
 
-			void  getRGB(colorData *rgb); // return RGB color data for the last reading
-			void  getRaw(sensorData *d);  // return the raw data from the last reading
+			//void  getRGB(colorData *rgb); // return RGB color data for the last reading
+			//void  getRaw(sensorData *d);  // return the raw data from the last reading
 			sensorData readRAW();      // Read RAW Values
 			colorData readRGB();      // Read RGB Values
 			
 			void sendColor();      
-			String readColor();
-			uint8_t readColorID();
+			String getColor();
+			uint8_t getColorID();
 
 			//Events for Calibration
+			void  BWCal( bool Black );
 			void  setDarkCal();
 			void  setWhiteCal();
 			void  calibration(uint8_t nEEPROM = 0);
@@ -145,8 +149,13 @@ ZGZMakerSpace - Blascarr Contribution
 			void  readCT();
 		protected:
 			void moveExecuted ( MOVE move );
-			void buttonPressed(BUTTON button);
+			//void buttonPressed(BUTTON button);
 			void buttonLongReleased(BUTTON button);
+
+			/**
+			* Runs the execution thread. This mode pause each step movement. Reserved for Developers and improvement.
+			*/
+			//virtual void tick(uint32_t micros);
 
 		private:
 			const Config* _config;

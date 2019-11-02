@@ -54,8 +54,27 @@ public:
 
     virtual void buttonLongReleased(BUTTON button);
 
-private:
+    ////////////////////////////////////////////////////////////
+    // Color Sensor Programming
+    ////////////////////////////////////////////////////////////
 
+    void color_action ( COLORS color, void *f() , bool on_Change = false );
+    void load_colortable ( uint16_t nEEPROM = 0 );
+    void color_calibration( uint16_t nEEPROM = 0 );
+
+    ////////////////////////////////////////////////////////////
+    // External Movements
+    ////////////////////////////////////////////////////////////
+
+    void move ( MOVE move );
+
+    //Game Ends, true means win, false for fail
+    void endGame( bool success );
+    void win(){ endGame( true ); };
+    void game_over(){ endGame( false ); };
+    
+    
+private:
     void _go();
 
     void _storeMove(MOVE move);

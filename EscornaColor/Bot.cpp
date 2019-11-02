@@ -242,6 +242,23 @@ void Bot::_storeMove(MOVE move)
         _go();
     }
 }
+//////////////////////////////////////////////////////////////////////
+
+void Bot::move(MOVE move)
+{
+    _storeMove( move );
+    //_go();
+}
+
+void Bot::endGame( bool success ){
+    if( success ){
+        KEYPAD_LEDS.setAllLed( true );
+        BUZZER.playRttl(":d=8,o=6,b=400:c,e,g,e,c,g,e,g,c,g,c,e,c,g,e,g,e,c,");
+    }else{
+        BUZZER.playRttl(":d=16,o=6,b=800:f,4p,f,4p,f,4p,f,4p,c,4p,c,4p,c,4p,c,");
+    }
+    _game_mode = GAME_OVER;
+}
 
 //////////////////////////////////////////////////////////////////////
 
@@ -267,13 +284,22 @@ void Bot::_next_game_mode()
             
             
             break;
-        case COLOR_CALIBRATION_MODE:
-            
-
-            break;
     }
 
     EVENTS->indicateGameModeSelected(_game_mode);
+}
+
+void Bot::color_action ( COLORS color, void *f(), bool on_Change ) {
+    TCS.COLORACTION[ color ].action = f;
+    TCS.COLORACTION[ color ].onChange = on_Change;
+}
+
+void Bot::load_colortable ( uint16_t nEEPROM  ){
+    TCS.loadCal( nEEPROM );
+}
+
+void Bot::color_calibration( uint16_t nEEPROM  ){
+    TCS.calibration( nEEPROM );
 }
 
 //////////////////////////////////////////////////////////////////////

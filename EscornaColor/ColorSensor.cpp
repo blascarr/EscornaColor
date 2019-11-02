@@ -59,9 +59,6 @@ ZGZMakerSpace - Blascarr Contribution
 #ifndef COLOR_ENDCMD 
 	#define  COLOR_ENDCMD "*"
 #endif
-#ifndef COLOR_SEPCMD
-	#define  COLOR_SEPCMD "|"
-#endif
 
 #if defined(SERIAL_DEBUG)
 	#define  DUMP(s, v)  { SERIALDEBUG.print(F(s)); SERIALDEBUG.print(v); }
@@ -112,34 +109,27 @@ void ColorSensor::init()
 	ColorSensor::nSamples( _config->nSamples  );
 	ColorSensor::setRefreshTime( _config->refreshTime );
 	ColorSensor::setFrequency( TCS3200_FREQ_HI );
-	ColorSensor::loadCal( _config->EEPROM_DIR );
 	ColorSensor::LEDON( true );
 }
 
 //////////////////////////// Event Habdling //////////////////////////////////////////
 
-void ColorSensor::tick(uint32_t micros)
-{
-    _current_millis = micros / 1000;
-
-	//if ( onChangeColor() ){
-		//Serial.print( ColorSensor::readColor() );
-	//};
-}
-
 void  ColorSensor::moveExecuted ( MOVE move ){
-	if ( onChangeColor() ){
-		Serial.print( ColorSensor::readColor() );
-	};
+	
+	if (COLORACTION [ getColorID() ].onChange){
+		//Accion cuando encuentra nuevo color 
+		if ( onChangeColor() ){
+			COLORACTION [ getColorID() ].action();
+		};
+	}else{	
+		//Accion ejecutada siempre que finaliza un movimiento
+		ColorSensor::readColor();
+		COLORACTION [ getColorID() ].action();
+	}
+	DUMPCOLOR( ColorSensor::getColor() );
+
 }
 
-void  ColorSensor::buttonPressed(BUTTON button){
-	if ( onChangeColor() ){
-		Serial.print("NEW COLOR - ");
-	};
-	Serial.print( ColorSensor::readColor() );
-	
-}
 
 void  ColorSensor::buttonLongReleased(BUTTON button){
 	if ( button == BUTTON_DOWN){
@@ -148,6 +138,13 @@ void  ColorSensor::buttonLongReleased(BUTTON button){
 
 	if ( button == BUTTON_UP){
 		ColorSensor::loadCal(0);
+	}
+
+	if ( button == BUTTON_LEFT){
+		ColorSensor::readColor();
+
+		Serial.print( ColorSensor::getColor() );
+		DUMPCOLOR( ColorSensor::getColor() );
 	}
 }
 
@@ -165,7 +162,7 @@ void  ColorSensor::setRefreshTime(unsigned long refreshTime){
 	ColorSensor::refreshTime = refreshTime;
 }
 
-void  ColorSensor::setEEPROMaddress( uint8_t nEEPROM ){
+void  ColorSensor::setEEPROMaddress( uint16_t nEEPROM ){
 	ColorSensor::_nEEPROM = nEEPROM;
 }
 
@@ -177,7 +174,6 @@ void  ColorSensor::LEDON(bool ledON){
 void  ColorSensor::setID(String ID){
 	ID.toCharArray(ColorSensor::_ID, TCS_SIZENAME);
 }
-
 
 void ColorSensor::setFrequency( uint8_t f ){
 	ColorSensor::_freqSet = f;
@@ -225,8 +221,9 @@ void ColorSensor::setFilter(uint8_t f){
 void ColorSensor::read() {
 	ColorSensor::currentMillis = millis();
 	if(ColorSensor::currentMillis-ColorSensor::oldMillis >= ColorSensor::refreshTime){
-		
+		ColorSensor::LEDON(true);
 		ColorSensor::readRGB();
+		ColorSensor::LEDON(false);
 		ColorSensor::oldMillis  = ColorSensor::currentMillis;
 
 	}
@@ -254,11 +251,17 @@ bool ColorSensor::onChangeColor(){
 
 }
 
-String ColorSensor::readColor(){
+void ColorSensor::readColor(){
+	ColorSensor::read();
+	int cli= ColorSensor::checkColor( &_rgb );
+	ColorSensor::_lastColor = cli;
+}
+
+String ColorSensor::getColor(){
 	return ColorSensor::_ct[ _lastColor ].name;
 }
 
-uint8_t ColorSensor::readColorID(){
+uint8_t ColorSensor::getColorID(){
 	return ColorSensor::_lastColor;
 }
 
@@ -331,7 +334,7 @@ sensorData ColorSensor::readRAW() {
 	return rawcl;
 }
 
-sensorData  ColorSensor::relativeColor(bool RGB){
+/*sensorData  ColorSensor::relativeColor(bool RGB){
 	if (RGB){
 		uint32_t sumcolor = _rgb.value[0]+_rgb.value[1]+_rgb.value[2];
 		_relrgb.value[TCS3200_RGB_R] = _rgb.value[TCS3200_RGB_R]/sumcolor;
@@ -357,9 +360,9 @@ sensorData  ColorSensor::relativeColor(bool RGB){
 		//DUMP(" RelClear : ",_relraw.value[TCS3200_RGB_X]);
 		return _relraw;
 	}
-}
+}*/
 
-void ColorSensor::getRGB(colorData *rgb){
+/*void ColorSensor::getRGB(colorData *rgb){
 	if (rgb == NULL)
 	return;
 
@@ -368,9 +371,9 @@ void ColorSensor::getRGB(colorData *rgb){
 		rgb->value[i] = _rgb.value[i];
 		//DUMP(" ", rgb->value[i]);
 	}
-}
+}*/
 
-void ColorSensor::getRaw(sensorData *d){
+/*void ColorSensor::getRaw(sensorData *d){
 	// get the raw data of the current reading
 	// useful to set dark and white calibration data
 	if (d == NULL) return;
@@ -380,7 +383,7 @@ void ColorSensor::getRaw(sensorData *d){
 		d->value[i] = _raw.value[i];
 		//DUMP(" ", d->value[i]);
 	}
-}
+}*/
 
 colorData ColorSensor::raw2RGB(void){
 	// Exploiting linear relationship to remap the range 
@@ -475,8 +478,62 @@ void ColorSensor::calibration(uint8_t nEEPROM){
 	DUMPPRINTLN();
 }
 
+void ColorSensor::BWCal( bool Black ){
+	sensorData BWcl;
+	String BWLabel;
+	if( Black ){
+		BWLabel = "BLACK";
+	}else{
+		BWLabel = "WHITE";
+	}
+	DUMP("Calibration ", BWLabel);
+	DUMPPRINTLN();
+	ColorSensor::voidRAW(&BWcl);
+	bool sure= false;
+	while (sure == false){
+
+		while(!DUMPSAVAILABLE()){
+
+		}
+		DUMPREADSTRING();
+
+		BWcl = ColorSensor::readRAW();
+		DUMP( "RGB ", BWLabel );
+		DUMPS (" Values "); 
+
+		String dataRGB = "";
+		for (int i = 0; i < RGB_SIZE; ++i){
+			dataRGB += BWcl.value[i];
+			dataRGB += DEBUG_SEPCMD;
+		}
+		DUMPCAL("",dataRGB ); 
+		DUMPPRINTLN();
+
+		DUMPS_CMD(" Are you sure this values are correct for Calibration? (Y/N)");
+		while(!DUMPSAVAILABLE()){
+
+		}
+		DUMPPRINTLN();
+		char chr;
+		DUMPREAD(chr);
+		DUMP_CMD("Char Read : ",chr);DUMPPRINTLN();
+		if (chr == 'Y'){
+			if( Black ){
+				_darkraw = BWcl;
+			}else{
+				_whiteraw = BWcl;
+			}
+			sure = true;
+		}
+	}
+	DUMP( "End Calibration for ", BWLabel );
+	//DUMP_CMD(" End BLACK Calibration");
+	DUMPPRINTLN();
+}
+
 void ColorSensor::setDarkCal(){
-	sensorData darkcl;
+	BWCal( true );
+	/*sensorData darkcl;
 	DUMPS(" BLACK Calibration ");
 	DUMPPRINTLN();
 	ColorSensor::voidRAW(&darkcl);
@@ -514,12 +571,13 @@ void ColorSensor::setDarkCal(){
 	}
 	
 	DUMPS_CMD(" End BLACK Calibration");
-	DUMPPRINTLN();
+	DUMPPRINTLN();*/
 }
 
 
 void ColorSensor::setWhiteCal(){
-	sensorData whitecl;
+	BWCal( false );
+	/*sensorData whitecl;
 	DUMPPRINTLN();
 	DUMPS("WHITE Calibration ");
 	DUMPPRINTLN();
@@ -558,7 +616,7 @@ void ColorSensor::setWhiteCal(){
 	}
 	
 	DUMPS_CMD(" End WHITE Calibration");
-	DUMPPRINTLN();
+	DUMPPRINTLN();*/
 }
 
 void ColorSensor::setColorCal(){
