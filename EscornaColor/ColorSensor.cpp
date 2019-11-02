@@ -334,57 +334,6 @@ sensorData ColorSensor::readRAW() {
 	return rawcl;
 }
 
-/*sensorData  ColorSensor::relativeColor(bool RGB){
-	if (RGB){
-		uint32_t sumcolor = _rgb.value[0]+_rgb.value[1]+_rgb.value[2];
-		_relrgb.value[TCS3200_RGB_R] = _rgb.value[TCS3200_RGB_R]/sumcolor;
-		_relrgb.value[TCS3200_RGB_G] = _rgb.value[TCS3200_RGB_G]/sumcolor;
-		_relrgb.value[TCS3200_RGB_B] = _rgb.value[TCS3200_RGB_B]/sumcolor;
-		//_relraw.value[TCS3200_RGB_X] = _raw.value[TCS3200_RGB_X]/sumcolor;
-
-		//DUMP(" RelRed : ",_relrgb.value[TCS3200_RGB_R]);
-		//DUMP(" RelGreen : ",_relrgb.value[TCS3200_RGB_G]);
-		//DUMP(" RelBlue : ",_relrgb.value[TCS3200_RGB_B]);
-		//DUMP(" RelClear : ",_relraw.value[TCS3200_RGB_X]);
-		return _relrgb;
-	}else{
-		uint32_t sumcolor = _raw.value[0]+_raw.value[1]+_raw.value[2];
-		_relraw.value[TCS3200_RGB_R] = _raw.value[TCS3200_RGB_R]/sumcolor;
-		_relraw.value[TCS3200_RGB_G] = _raw.value[TCS3200_RGB_G]/sumcolor;
-		_relraw.value[TCS3200_RGB_B] = _raw.value[TCS3200_RGB_B]/sumcolor;
-		//_relraw.value[TCS3200_RGB_X] = _raw.value[TCS3200_RGB_X]/sumcolor;
-
-		//DUMP(" RelRed : ",_relraw.value[TCS3200_RGB_R]);
-		//DUMP(" RelGreen : ",_relraw.value[TCS3200_RGB_G]);
-		//DUMP(" RelBlue : ",_relraw.value[TCS3200_RGB_B]);
-		//DUMP(" RelClear : ",_relraw.value[TCS3200_RGB_X]);
-		return _relraw;
-	}
-}*/
-
-/*void ColorSensor::getRGB(colorData *rgb){
-	if (rgb == NULL)
-	return;
-
-	//DUMPS("\ngetRGB");
-	for (uint8_t i=0; i<RGB_SIZE; i++){
-		rgb->value[i] = _rgb.value[i];
-		//DUMP(" ", rgb->value[i]);
-	}
-}*/
-
-/*void ColorSensor::getRaw(sensorData *d){
-	// get the raw data of the current reading
-	// useful to set dark and white calibration data
-	if (d == NULL) return;
-
-	//DUMPS("\ngetRAW");
-	for (uint8_t i=0; i<RGB_SIZE; i++){
-		d->value[i] = _raw.value[i];
-		//DUMP(" ", d->value[i]);
-	}
-}*/
-
 colorData ColorSensor::raw2RGB(void){
 	// Exploiting linear relationship to remap the range 
 	int32_t x;
@@ -533,90 +482,11 @@ void ColorSensor::BWCal( bool Black ){
 
 void ColorSensor::setDarkCal(){
 	BWCal( true );
-	/*sensorData darkcl;
-	DUMPS(" BLACK Calibration ");
-	DUMPPRINTLN();
-	ColorSensor::voidRAW(&darkcl);
-	bool sure= false;
-	while (sure == false){
-
-		while(!DUMPSAVAILABLE()){
-
-		}
-		DUMPREADSTRING();
-
-		darkcl = ColorSensor::readRAW();
-		DUMPS ("RGB BLACK Values "); 
-
-		String dataRGB = "";
-		for (int i = 0; i < RGB_SIZE; ++i){
-			dataRGB += darkcl.value[i];
-			dataRGB += DEBUG_SEPCMD;
-		}
-		DUMPCAL("",dataRGB ); 
-		DUMPPRINTLN();
-
-		DUMPS_CMD(" Are you sure this values are correct for BLACK Calibration? (Y/N)");
-		while(!DUMPSAVAILABLE()){
-
-		}
-		DUMPPRINTLN();
-		char chr;
-		DUMPREAD(chr);
-		DUMP_CMD("Char Read : ",chr);DUMPPRINTLN();
-		if (chr == 'Y'){
-			_darkraw = darkcl;
-			sure = true;
-		}
-	}
-	
-	DUMPS_CMD(" End BLACK Calibration");
-	DUMPPRINTLN();*/
 }
 
 
 void ColorSensor::setWhiteCal(){
 	BWCal( false );
-	/*sensorData whitecl;
-	DUMPPRINTLN();
-	DUMPS("WHITE Calibration ");
-	DUMPPRINTLN();
-	ColorSensor::voidRAW(&whitecl);
-	bool sure= false;
-	while (sure == false){
-
-		while(!DUMPSAVAILABLE()){
-
-		}
-		DUMPREADSTRING();
-
-		whitecl = ColorSensor::readRAW();
-		DUMPS("RGB WHITE Values "); 
-
-		String dataRGB = "";
-		for (int i = 0; i < RGB_SIZE; ++i){
-			dataRGB += whitecl.value[i];
-			dataRGB += DEBUG_SEPCMD;
-		}
-		DUMPCAL("",dataRGB ); 
-		
-		DUMPPRINTLN();
-		DUMPS_CMD(" Are you sure this values are correct for WHITE Calibration? (Y/N)");
-		while(!DUMPSAVAILABLE()){
-
-		}
-		DUMPPRINTLN();
-		char chr;
-		DUMPREAD(chr);
-		DUMP_CMD("Char Read : ",chr);DUMPPRINTLN();
-		if (chr == 'Y'){
-			_whiteraw = whitecl;
-			sure = true;
-		}
-	}
-	
-	DUMPS_CMD(" End WHITE Calibration");
-	DUMPPRINTLN();*/
 }
 
 void ColorSensor::setColorCal(){

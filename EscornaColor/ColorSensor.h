@@ -119,10 +119,7 @@ ZGZMakerSpace - Blascarr Contribution
 			void readColor();
 			bool onChangeColor();
 			sensorData  color();	//Single Reading
-			//sensorData  relativeColor(bool RGB = true);
-
-			//void  getRGB(colorData *rgb); // return RGB color data for the last reading
-			//void  getRaw(sensorData *d);  // return the raw data from the last reading
+			
 			sensorData readRAW();      // Read RAW Values
 			colorData readRGB();      // Read RGB Values
 			
