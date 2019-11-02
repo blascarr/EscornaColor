@@ -130,9 +130,7 @@ void  ColorSensor::moveExecuted ( MOVE move ){
 			ColorSensor::_lastColor = cli;
 			COLORACTION [ getColorID() ].action();
 		};
-		//if ( onChangeColor() ){
-			
-		//};
+
 	}else{	
 		//Accion ejecutada siempre que finaliza un movimiento
 		ColorSensor::readColor();
