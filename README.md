@@ -44,13 +44,106 @@ Acto seguido se requiere de una calibración de una tabla de **8 colores** que s
 
 Esta calibración se puede realizar a través del **monitor serie** o por **Bluetooth** a través de una aplicación.
 
+# Programa tu EscornaColor.
+
+Para desarrollar una programación personalizada de tu EscornaColor, solo tienes que registrar una función a cada movimiento y realizar tu robot con tus propias reglas.
+
+Te dejamos unos códigos de ejemplo para que puedas crear tu propio modelo de programación.
+
+Existen dos funciones en caso de ganar ( win() ) y en caso de perder el juego ( game_over() ).
+Puedes crear un modelo de juego en el que puedes perder vidas en función del color que el EscornaColor ha detectado. Si llega al color objetivo sin perder todas las vidas ganas.
+```cpp
+Bot ESCORNABOT;
+int lives = 2;
+
+void red(){
+  ESCORNABOT.win();
+}
+
+void green(){
+  lives -= 1;
+  Serial.print("Lives: ");Serial.println(lives);
+  if (lives <= 0 ){
+    ESCORNABOT.game_over();
+    Serial.println("GAME OVER");
+  }
+}
+```
+
+También puedes programar los movimientos en función del color que has encontrado con la función move( ). Dentro del parámetro de esta función puedes definir los siguientes tipos de movimiento.
+
+- MOVE_NONE
+- MOVE_FORWARD
+- MOVE_RIGHT
+- MOVE_BACKWARD
+- MOVE_LEFT
+- MOVE_PAUSE
+- MOVE_ALT_RIGHT
+- MOVE_ALT_LEFT
+
+```cpp
+void white(){
+  ESCORNABOT.move( MOVE_BACKWARD );
+  Serial.println("COLOR White");
+}
+
+void black(){
+  ESCORNABOT.move( MOVE_FORWARD );
+  Serial.println("COLOR Black");
+}
+```
+Ten cuidado, porque puedes caer facilmente en un bucle de movimientos si no piensas bien la secuencia.
+
+Una vez finalizadas tus reglas de juego, deberás asociar una accion de color a cada color en el setup de tu programa. El bucle loop se encargará de todo-
+
+```cpp
+void setup()
+{
+    ESCORNABOT.init();
+    ESCORNABOT.load_colortable();
+
+    //Color Actions Define
+    ESCORNABOT.color_action( WHITE , white );
+    ESCORNABOT.color_action( BLACK , black );
+    ESCORNABOT.color_action( RED , red );
+    
+    //GREEN change non consecutively
+    ESCORNABOT.color_action( GREEN , green, true );
+    //YELLOW need to change from consecutive yellow colors
+    ESCORNABOT.color_action( YELLOW , yellow );
+    
+    //random movements for Blue color
+    randomSeed(analogRead(5));
+    ESCORNABOT.color_action( BLUE , blue );
+
+    //Brown and Orange not working
+    ESCORNABOT.color_action( BROWN , aux_void );
+    ESCORNABOT.color_action( ORANGE , aux_void );
+}
+
+void loop()
+{
+    ESCORNABOT.loop();
+}
+
+//Auxiliar void function for every color action defined
+void aux_void(){
+  
+}
+```
+
+Al final, solo tienes que cargar el código a tu robot y dejarlo funcionar con los objetivos que te has definido.
+
+IMPORTANTE: Ten cuidado de no saturar la memoria. Si superas más del 85% de la memoria RAM pueden ocurrir errores, pero puedes jugártela. 
+
 # Formatos de juego a desarrollar.
 
-- Cuando se alcanza un color, se ejecutan las acciones de movimiento hasta llegar al objetivo. Juego de la hormiga. [Hormiga de Langton Simplificado](https://es.wikipedia.org/wiki/Hormiga_de_Langton)
-- El **EscornaColor** tiene un número de vidas limitado. Los colores pueden quitar vidas. El objetivo es llegar vivo al objetivo.
-- A través de una aplicación se pueden ver los colores y movimientos del Escornabot. Sin mirar el tablero ni al EscornaColor hay que dibujar el tablero original.
+- [x] El **EscornaColor** tiene un número de vidas limitado. Los colores pueden quitar vidas. El objetivo es llegar vivo al objetivo.
+- [ ] Cuando se alcanza un color, se ejecutan las acciones de movimiento hasta llegar al objetivo. Juego de la hormiga. [Hormiga de Langton Simplificado](https://es.wikipedia.org/wiki/Hormiga_de_Langton)
 
-- Programación libre de escornabot con distintas dinámicas en base a las lecturas del sensor de color.
+- [ ] A través de una aplicación se pueden ver los colores y movimientos del Escornabot. Sin mirar el tablero ni al EscornaColor hay que dibujar el tablero original.
+
+- [ ] Programación libre de escornabot con distintas dinámicas en base a las lecturas del sensor de color.
 
 Esta extensión se basa en el desarrollo de una librería para módulos TCS3200 accesible en el siguiente [enlace](https://github.com/blascarr/TCS3200-ColorSensor).
 

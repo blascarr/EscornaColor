@@ -30,6 +30,7 @@ See LICENSE.txt for details
 Bot ESCORNABOT;
 int lives = 2;
 
+
 void white(){
   ESCORNABOT.move( MOVE_BACKWARD );
   Serial.println("COLOR White");
@@ -56,7 +57,6 @@ void green(){
     Serial.println("GAME OVER");
   }
 }
-
 void yellow(){
   lives -= 1;
   Serial.print("Lives: ");Serial.println(lives);
@@ -66,9 +66,7 @@ void yellow(){
   }
 }
 
-void aux_void(){
-  
-}
+
 //////////////////////////////////////////////////////////////////////
 
 void setup()
@@ -76,19 +74,21 @@ void setup()
     ESCORNABOT.init();
     ESCORNABOT.load_colortable();
 
-    //Hay que editar las acciones de color en orden
+    //Color Actions Define
     ESCORNABOT.color_action( WHITE , white );
     ESCORNABOT.color_action( BLACK , black );
     ESCORNABOT.color_action( RED , red );
     
+    //GREEN change non consecutively
+    ESCORNABOT.color_action( GREEN , green, true );
     //YELLOW need to change from consecutive yellow colors
-    ESCORNABOT.color_action( GREEN , green,true );
     ESCORNABOT.color_action( YELLOW , yellow );
     
-    //random movements for Green color
+    //random movements for Blue color
     randomSeed(analogRead(5));
     ESCORNABOT.color_action( BLUE , blue );
 
+    //Brown and Orange not working
     ESCORNABOT.color_action( BROWN , aux_void );
     ESCORNABOT.color_action( ORANGE , aux_void );
 }
@@ -100,6 +100,10 @@ void loop()
     ESCORNABOT.loop();
 }
 
+
+void aux_void(){
+  
+}
 //////////////////////////////////////////////////////////////////////
 
 
