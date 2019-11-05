@@ -1,4 +1,6 @@
 // ColorSensor.h
+//ZGZMakerSpace - Blascarr Contribution
+/*
 /*
 
 Copyright (C) 2014-2019 Escornabot - http://escornabot.com
@@ -20,7 +22,6 @@ USA.
 
 See LICENSE.txt for details
 
-ZGZMakerSpace - Blascarr Contribution
 */
 
 #ifndef _COLOR_SENSOR_H

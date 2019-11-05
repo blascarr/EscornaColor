@@ -72,7 +72,7 @@ void yellow(){
 void setup()
 {
     ESCORNABOT.init();
-    ESCORNABOT.load_colortable();
+    //ESCORNABOT.load_colortable();
 
     //Color Actions Define
     ESCORNABOT.color_action( WHITE , white );

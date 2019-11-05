@@ -1,4 +1,5 @@
 // ColorSensor.h
+//ZGZMakerSpace - Blascarr Contribution
 /*
 
 Copyright (C) 2014-2019 Escornabot - http://escornabot.com
@@ -19,11 +20,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
 USA.
 
 See LICENSE.txt for details
-
-ZGZMakerSpace - Blascarr Contribution
 */
 
-//#include "Enums.h"
 #include "EventManager.h"
 #include "ColorSensor.h"
 
@@ -130,7 +128,9 @@ void  ColorSensor::moveExecuted ( MOVE move ){
 			ColorSensor::_lastColor = cli;
 			COLORACTION [ getColorID() ].action();
 		};
-
+		//if ( onChangeColor() ){
+			
+		//};
 	}else{	
 		//Accion ejecutada siempre que finaliza un movimiento
 		ColorSensor::readColor();
@@ -153,7 +153,7 @@ void  ColorSensor::buttonLongReleased(BUTTON button){
 	if ( button == BUTTON_LEFT){
 		ColorSensor::readColor();
 
-		Serial.print( ColorSensor::getColor() );
+		//Serial.print( ColorSensor::getColor() );
 		DUMPCOLOR( ColorSensor::getColor() );
 	}
 }
@@ -400,7 +400,7 @@ void ColorSensor::calibration(uint8_t nEEPROM){
 
 	char readY;
 	DUMPREAD(readY);
-	DUMP_CMD("Char Read : ",readY);
+	DUMP("Char Read : ",readY);
 	if (readY == 'Y'){
 		DUMP_CMD("Black and White Calibration saved in EEPROM Address:  ",ColorSensor::_nEEPROM);
 		DUMPPRINTLN();
@@ -412,7 +412,7 @@ void ColorSensor::calibration(uint8_t nEEPROM){
 	}
 
 	DUMPREAD(readY);
-	DUMP_CMD("Char Read : ",readY);
+	DUMP("Char Read : ",readY);
 	DUMPPRINTLN();
 	if (readY == 'Y'){
 		DUMPS("Setting RGB Values");
@@ -422,7 +422,7 @@ void ColorSensor::calibration(uint8_t nEEPROM){
 		}
 
 		DUMPREAD(readY);
-		DUMP_CMD("Char Read : ",readY);DUMPPRINTLN();
+		DUMP("Char Read : ",readY);//DUMPPRINTLN();
 		if (readY == 'Y'){
 	  		DUMP_CMD("Colour table saved in EEPROM in EEPROM Address:  ", ColorSensor::_nEEPROM);
 	  		ColorSensor::saveCT(ColorSensor::_nEEPROM);
@@ -468,14 +468,14 @@ void ColorSensor::BWCal( bool Black ){
 		DUMPCAL("",dataRGB ); 
 		DUMPPRINTLN();
 
-		DUMPS_CMD(" Are you sure this values are correct for Calibration? (Y/N)");
+		DUMP_CMD(" Are you sure this values are correct for Calibration? (Y/N) ",BWLabel);
 		while(!DUMPSAVAILABLE()){
 
 		}
 		DUMPPRINTLN();
 		char chr;
 		DUMPREAD(chr);
-		DUMP_CMD("Char Read : ",chr);DUMPPRINTLN();
+		DUMP("Char Read : ",chr);DUMPPRINTLN();
 		if (chr == 'Y'){
 			if( Black ){
 				_darkraw = BWcl;
@@ -527,8 +527,8 @@ void ColorSensor::setColorCal(){
 
 			char readY;
 			DUMPREAD(readY);
-			DUMP_CMD("Char Read : ",readY);
-			DUMPPRINTLN();
+			DUMP("Char Read : ",readY);
+			//DUMPPRINTLN();
 
 			if (readY == 'Y'){
 				_ct[i].rgb = colorcl;

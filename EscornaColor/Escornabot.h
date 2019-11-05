@@ -25,7 +25,7 @@ See LICENSE.txt for details
 #ifndef _ESCORNABOT_H
 #define _ESCORNABOT_H
 
-#define FIRMWARE_VERSION "v1.7"
+#define FIRMWARE_VERSION "v2.0"
 
 #include <Arduino.h>
 #include "Configuration.h"

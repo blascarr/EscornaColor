@@ -35,7 +35,6 @@ See LICENSE.txt for details
 class Bot : public EventListener
 {
 public:
-    uint8_t lives = 2;
     void init();
 
     void loop();
