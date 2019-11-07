@@ -1,31 +1,38 @@
 // Escornabot.ino
-/*
-
-Copyright (C) 2014-2019 Escornabot - http://escornabot.com
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
-USA.
-
-See LICENSE.txt for details
-
-*/
 
 #include "Bot.h"
 
 //////////////////////////////////////////////////////////////////////
-// instance
+/*
+  Reglas del juego.
+
+  Nuestro robot debe ir desde la casilla de color naranja, hasta la casilla de color Verde.
+  Pero el tablero aún no está construido completamente. 
+  Solo hay unas cuantas casillas que son las trampas que deberemos evitar.
+  El resto de colores tienen programados diferentes movimientos.
+  Nuestra misión es descubrir que movimiento se corresponde con cada color para llegar desde la salida hasta la meta de forma directa.
+
+  Os dejamos un ejemplo de tablero 
+
+  ////////////////////////////////////////////////////
+  |       |       |       |       |       |       |
+  |       |       |       |       |       |       |
+  |       |       |       |       |       |       |
+  ////////////////////////////////////////////////////
+  |       |       |       |       |       |       |
+  |       |       |   R   |       |   R   |   V   | (META)
+  |       |       |       |       |       |       |
+  ////////////////////////////////////////////////////  
+  |       |       |       |       |       |       |
+  |       |   R   |       |       |   R   |       |
+  |       |       |       |       |       |       |
+  ////////////////////////////////////////////////////
+  |       |       |       |       |       |       |
+  |SALIDA |       |       |       |       |       |
+  |       |       |       |       |       |       |
+  ////////////////////////////////////////////////////
+  /
+*/
 
 Bot ESCORNABOT;
 int lives = 4;
@@ -98,7 +105,7 @@ void setup()
     ESCORNABOT.color_action( BLUE , leftforward );
 
     ESCORNABOT.color_action( BROWN , randomMove);
-    ESCORNABOT.color_action( ORANGE , warning);
+    ESCORNABOT.color_action( ORANGE , aux_void);
 }
 
 //////////////////////////////////////////////////////////////////////
