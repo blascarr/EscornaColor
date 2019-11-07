@@ -25,37 +25,50 @@ Bot ESCORNABOT;
 
 bool ingredients[5];
 
+void getIngredient(int n ){
+  if( !ingredients[n] ){
+    ingredients[n] = true;
+    ESCORNABOT.tick_tone();
+  }
+}
+
 void horno(){
-  ingredients[0] = true;
-  Serial.println("Horno");
+  getIngredient(0);
+  if(ingredients[0] == true ){
+    Serial.println("Horno");
+  }
 }
 
 void harina(){
   if(ingredients[0] == true ){
-    ingredients[1] = true; 
+    getIngredient(1);
+    Serial.println("Harina");
   }
-  Serial.println("Harina");
+  
 }
 
 void agua(){
   if(ingredients[1] == true ){
-    ingredients[2] = true;
+    getIngredient(2);
+     Serial.println("Agua");
   }
-  Serial.println("Agua");
+ 
 }
 
 void verdura(){
   if(ingredients[2] == true ){
-    ingredients[3] = true;
+    getIngredient(3);
+    Serial.println("Verdura");
   }
-  Serial.println("Verdura");
+  
 }
 
 void queso(){
   if(ingredients[3] == true ){
-    ingredients[4] = true;
+    getIngredient(4);
+    Serial.println("Queso");
   }
-  Serial.println("Queso");
+  
 }
 
 void cocinar(){
@@ -68,6 +81,7 @@ void cocinar(){
   }
   if( checkingredients ){
     ESCORNABOT.win();
+    Serial.println("WIN");
   }
 }
 
