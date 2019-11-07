@@ -62,7 +62,7 @@ See LICENSE.txt for details
 #define AFTER_MOVEMENT_PAUSE 0
 
 // point of view set when Vacalourabot is started
-#define POV_INITIAL    POV_ESCORNABOT
+#define POV_INITIAL    POV_CHILD
 
 // bluetooth serial
 #define USE_BLUETOOTH false
