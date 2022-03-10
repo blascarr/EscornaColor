@@ -1,5 +1,5 @@
 # EscornaColor
-Version de Escronabot con sensor de color **TCS3200**.
+Version de Escornabot con sensor de color **TCS3200**.
 
 El **sensor de color TCS3200** añade formatos de juego interesantes al famoso modelo de [**Escornabot**](https://escornabot.com/web/es).
 
